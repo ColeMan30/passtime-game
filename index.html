@@ -9,18 +9,23 @@
 html, body{
 margin:0;
 width:100%;
-height:100%;
+height:100dvh;
 overflow:hidden;
 background:#0b0b10;
 font-family:monospace;
 color:white;
 }
 
+body{
+  display:flex;
+  flex-direction:column;
+}
+
 .screen{
 display:flex;
 justify-content:space-between;
 padding:8px 15px 6px 15px;
-height:calc(44vh - 24px);
+height:calc(44dvh - 24px);
 overflow:hidden;
 }
 
@@ -61,7 +66,7 @@ cursor:default;
 }
 
 .menu{
-height:calc(56vh - 32px);
+height:calc(56dvh - 32px);
 background:#07070c;
 border-top:4px solid #333;
 padding:6px 10px 10px 10px;
@@ -411,7 +416,7 @@ html, body{
 .screen{
   display:grid;
   grid-template-columns:1.25fr 0.75fr;
-  height:42vh;
+  height:42dvh;
   padding:6px;
   gap:6px;
   overflow:visible;
