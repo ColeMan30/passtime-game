@@ -6,8 +6,11 @@
 <title>Pass Time - Game Engine</title>
 
 <style>
-body{
+html, body{
 margin:0;
+width:100%;
+height:100%;
+overflow:hidden;
 background:#0b0b10;
 font-family:monospace;
 color:white;
@@ -16,13 +19,14 @@ color:white;
 .screen{
 display:flex;
 justify-content:space-between;
-padding:15px;
-height:45vh;
+padding:8px 15px 6px 15px;
+height:calc(44vh - 24px);
+overflow:hidden;
 }
 
 .side{
   width:48%;
-  height:45vh;
+  height:100%;
   overflow-y:auto;
   overflow-x:visible;
   min-width:0;
@@ -57,16 +61,22 @@ cursor:default;
 }
 
 .menu{
-height:40vh;
+height:calc(56vh - 32px);
 background:#07070c;
 border-top:4px solid #333;
-padding:10px;
+padding:6px 10px 10px 10px;
 display:flex;
 flex-direction:column;
-gap:10px;
+gap:6px;
+overflow:hidden;
 }
 
-.menuRow{display:flex;gap:15px;height:300px;}
+.menuRow{
+display:flex;
+gap:15px;
+flex:1;
+min-height:0;
+}
 
 .panelHero,.panelAbilities,.panelDesc{
 background:#111;
@@ -84,7 +94,7 @@ overflow-x:hidden;
 background:black;
 border:2px solid #444;
 padding:6px;
-height:100px;
+height:150px;
 overflow-y:auto;
 }
 
@@ -318,20 +328,22 @@ transition:width 0.2s ease;
 
 #turnBar{
 display:flex;
-gap:8px;
-padding:8px;
+gap:6px;
+padding:5px 8px;
 background:#05050a;
 border-bottom:3px solid #333;
 overflow-x:auto;
 }
 
 .turnIcon{
-min-width:90px;
-padding:6px;
+min-width:82px;
+padding:4px;
 background:#222;
 border:2px solid #555;
 text-align:center;
 border-radius:8px;
+font-size:11px;
+line-height:1.05;
 }
 
 .turnHero{
@@ -1316,6 +1328,8 @@ function typeStory(html){
 
     box.innerHTML = displayedStoryText;
 
+    box.scrollTop = box.scrollHeight;
+
     if(i < html.length){
 
       // slower pauses after punctuation
@@ -1342,6 +1356,7 @@ function typeStory(html){
       displayedStoryText = html;
       storyTyping = false;
       box.innerHTML = html;
+      box.scrollTop = box.scrollHeight;
     }
   }
 
@@ -2236,7 +2251,7 @@ if (!DEV_MODE && h._class === "Knight" && !h._tutorialBuffApplied) {
 
 render();
 typeStory(storyText);
-rollInitiative();
+rollInitiative(true);
 
 el("log").addEventListener("click", () => {
   skipAllLogs = true;
@@ -2255,7 +2270,7 @@ window.addEventListener("DOMContentLoaded", initGame);
 
 /* ================= INITIATIVE ================= */
 
-function rollInitiative(){
+function rollInitiative(announceWave = false){
 
 turnQueue=[];
 turnIndex=0;
@@ -2294,7 +2309,9 @@ turnQueue.push({
 
 turnQueue.sort((a,b)=>b.init-a.init);
 
-log(`🔥 ENTERING WAVE ${wave}`);
+if(announceWave){
+  log(`🔥 ENTERING WAVE ${wave}`);
+}
 
 nextTurn();
 }
@@ -2596,7 +2613,8 @@ if(wave === 16 && !storyEventsTriggered[16]){
 
   storyText = `
 The Goblin King is defeated.
-The caves open into a corrupt forest.
+
+<p>The caves open into a corrupt forest.</p>
   `;
 
 typeStory(storyText);
@@ -2686,9 +2704,9 @@ heroes.forEach(h=>{
 });
 
 enemies=createEnemies(wave);
-rollInitiative();
-render();
 waveHandled = false;
+rollInitiative(true);
+render();
 },800);
 
 return;
@@ -2782,8 +2800,7 @@ currentHeroIndex = i;
 let h=heroes[i];
 
 el("heroPanel").innerHTML=
-`<b>${h.name}</b><br>
-Lv ${h.level}<br>
+`<b>${h.name}</b> <span style="font-size:12px;color:#aaa;">Lv ${h.level}</span><br>
 
 EQUIPMENT<br>
 Weapon: ${h.equipment?.weapon ? h.equipment.weapon.name : "None"}<br>
@@ -2949,17 +2966,16 @@ el("descPanel").innerHTML=
 <b>STORY</b>
 <hr>
 
-<div id="storyTextBox" style="margin-bottom:12px; min-height:90px;">
+<div id="storyTextBox" style="
+  margin-bottom:0;
+  min-height:90px;
+  max-height:100%;
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding-right:4px;
+">
 ${storyTyping ? displayedStoryText : storyText}
 </div>
-
-<hr>
-
-ATK ${getStats(h).attack}<br>
-MAG ${getStats(h).magic}<br>
-DEF ${getStats(h).def}<br>
-RES ${getStats(h).resist}<br>
-SPD ${getStats(h).speed}
 `;
 }
 
@@ -3285,8 +3301,19 @@ function summonEnemy(type, w){
 
   log(`🧟 ${summoned.name} joins the battle!`);
 
-  rollInitiative();
-  render();
+let init = getInitiative(summoned, wave);
+
+turnQueue.push({
+  type:"enemy",
+  i: enemies.indexOf(summoned),
+  entity: summoned,
+  init
+});
+
+turnQueue.sort((a,b)=>b.init-a.init);
+
+renderTurnBar();
+render();
 
   return true;
 }
