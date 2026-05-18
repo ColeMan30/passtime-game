@@ -614,6 +614,10 @@ html, body{
   color:white;
   box-shadow:none;
   overflow:hidden;
+
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-touch-callout:none;
 }
 
 .hotbarBtn.locked{
@@ -1509,6 +1513,11 @@ function typeStory(html){
 
     box.scrollTop = box.scrollHeight;
 
+let desc = el("descPanel");
+if(desc){
+  desc.scrollTop = desc.scrollHeight;
+}
+
     if(i < html.length){
 
       // slower pauses after punctuation
@@ -1536,6 +1545,11 @@ function typeStory(html){
       storyTyping = false;
       box.innerHTML = html;
       box.scrollTop = box.scrollHeight;
+
+let desc = el("descPanel");
+if(desc){
+  desc.scrollTop = desc.scrollHeight;
+}
     }
   }
 
@@ -2665,7 +2679,7 @@ if(wave === 8 && !storyEventsTriggered[8]){
 The Dungeon grows colder with every step.<br>
 The cries of prisoners fade into silence.
 
-<p>Something below the prison is watching.</p>
+<p>Something below the dungeon is watching.</p>
   `;
 
   typeStory(storyText);
@@ -2976,11 +2990,10 @@ if(!bonusText){
 
 el("heroPanel").innerHTML=
 `
-<div class="heroCompactTop">
-  <div class="heroCompactName">
-    <b>${h.name}</b><br>
-    <span style="color:#aaa;">Lv ${h.level}</span>
-  </div>
+<div class="heroCompactName">
+  <b>${h.name}</b>
+  <span style="color:#aaa;">Lv ${h.level}</span>
+</div>
 
   <div class="heroCompactInfo">
     <b>EQUIPMENT</b><br>
