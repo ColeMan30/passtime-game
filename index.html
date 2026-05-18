@@ -1398,7 +1398,7 @@ function showAbilityPreview(hero, ability){
     Target: ${ability.target}<br>
     ${ability.apply ? `Effect: ${ability.apply}<br>` : ""}
     <br>
-    <span style="color:#aaa;">Tap to cast. Hold to preview.</span>
+    <span style="color:#aaa;">Tap to cast. Hold and slide finger down to preview.</span>
   `;
 }
 
@@ -2997,10 +2997,10 @@ el("heroPanel").innerHTML=
     <span style="color:#aaa;">Lv ${h.level}</span>
   </div>
 
-  <div class="heroCompactInfo">
-    <b>EQUIPMENT:</b>
-    ${weaponName} • ${armorName} • ${accessoryName}
-  </div>
+<div class="heroCompactInfo">
+  <b>EQUIPMENT:</b><br>
+  ${weaponName} • ${armorName} • ${accessoryName}
+</div>
 
 </div>
 
