@@ -202,8 +202,8 @@ box-shadow:0 0 12px yellow;
   image-rendering:pixelated;
 
   margin-left:-18px;
-  margin-bottom:-25px;
-  margin-top:-15px;
+  margin-bottom:-28px;
+  margin-top:-20px;
 }
 
 /* IDLE FRAME */
@@ -500,7 +500,7 @@ html, body{
   background-size:512px 128px;
 
   margin-left:-18px;
-  margin-top:-18px;
+  margin-top:-28px;
   margin-bottom:-30px;
 }
 
@@ -629,18 +629,18 @@ function setKnightAnimation(animClass, duration = 500){
 
   if(animClass === "knightShield"){
     sheet = "sprites/knight_shield.png";
-    moveStart = "translate(5px, 15px)";
-    moveEnd = "translate(5px, 15px)";
-  }
-  else if(animClass === "knightQuickAttack"){
-    sheet = "sprites/knight_quickattack.png";
     moveStart = "translate(5px, 5px)";
     moveEnd = "translate(5px, 5px)";
   }
+  else if(animClass === "knightQuickAttack"){
+    sheet = "sprites/knight_quickattack.png";
+    moveStart = "translate(5px, -5px)";
+    moveEnd = "translate(5px, -5px)";
+  }
   else if(animClass === "knightShieldBash"){
     sheet = "sprites/knight_shieldBash.png";
-    moveStart = "translate(10px, 12px)";
-    moveEnd = "translate(10px, 12px)";
+    moveStart = "translate(10px, 2px)";
+    moveEnd = "translate(10px, 2px)";
   }
 
   sprite.style.backgroundImage = `url("${sheet}")`;
