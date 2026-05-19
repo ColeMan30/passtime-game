@@ -325,6 +325,12 @@ box-shadow:0 0 12px yellow;
   transform-origin:center;
 }
 
+.heroSpawn{
+  animation:summonPop 1.05s cubic-bezier(0.16, 1, 0.3, 1) 1;
+  box-shadow:0 0 18px deepskyblue;
+  transform-origin:center;
+}
+
 .bossSpawn{
   animation:bossSpawnPop 1.25s cubic-bezier(0.16, 1, 0.3, 1) 1;
   box-shadow:0 0 26px gold, 0 0 18px crimson;
@@ -4417,7 +4423,7 @@ p.innerHTML +=`
 <div class="card
 ${heroes.indexOf(h)===selectedAlly ? 'selected' : ''}
 ${h.hp <= 0 ? 'dead' : ''}
-${h.justRecruited ? 'summonedEnemy' : ''}"
+${h.justRecruited ? 'heroSpawn' : ''}"
 
 data-name="${h.name}"
 
