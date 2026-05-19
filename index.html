@@ -480,11 +480,31 @@ html, body{
 .panelHero{
   grid-area:hero;
   width:100%;
-  max-height:12vh;
-  min-height:58px;
+  height:auto;
+  max-height:96px;
+  min-height:84px;
   padding:4px 6px;
   font-size:10px;
-  line-height:1.15;
+  line-height:1.05;
+  overflow:hidden;
+}
+
+.heroUiLine{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.heroUiSmall{
+  font-size:9px;
+  line-height:1.05;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.heroUiSection{
+  margin-top:2px;
 }
 
 .heroCompactTop{
@@ -2990,48 +3010,44 @@ if(!bonusText){
 
 el("heroPanel").innerHTML=
 `
-<div class="heroCompactTop">
-
-  <div class="heroCompactName">
-    <b>${h.name}</b>
-    <span style="color:#aaa;">Lv ${h.level}</span>
-  </div>
-
-<div class="heroCompactInfo">
-  <b>EQUIPMENT:</b><br>
-  ${weaponName} • ${armorName} • ${accessoryName}
+<div class="heroUiLine">
+  <b>${h.name}</b> <span style="color:#aaa;">Lv ${h.level}</span>
 </div>
 
+<div class="heroUiLine">
+  HP ${h.hp}/${h.maxHp}
 </div>
-
-<div class="heroCompactBonus">
-  <b>BONUSES:</b> ${bonusText}
-</div>
-
-<div class="heroCompactVitals">
-HP ${h.hp}/${h.maxHp}<br>
 
 <div class="hpBar">
-<div class="hpFill"
-style="
-width:${(h.hp/h.maxHp)*100}%;
-background:${
-(h.hp/h.maxHp) > 0.6
-? 'limegreen'
-: (h.hp/h.maxHp) > 0.3
-? 'gold'
-: 'red'
-};
-">
+  <div class="hpFill"
+  style="
+  width:${(h.hp/h.maxHp)*100}%;
+  background:${
+  (h.hp/h.maxHp) > 0.6
+  ? 'limegreen'
+  : (h.hp/h.maxHp) > 0.3
+  ? 'gold'
+  : 'red'
+  };
+  ">
+  </div>
 </div>
-</div>
-<br>
 
-XP ${h.xp || 0}/${xpToNext(h.level)}
+<div class="heroUiLine">
+  XP ${h.xp || 0}/${xpToNext(h.level)}
+</div>
+
 <div class="xpBar">
-<div class="xpFill" style="width:${Math.min(100, ((h.xp||0)/xpToNext(h.level))*100)}%"></div>
+  <div class="xpFill" style="width:${Math.min(100, ((h.xp||0)/xpToNext(h.level))*100)}%"></div>
 </div>
 
+<div class="heroUiSection heroUiSmall">
+  <b>EQUIPMENT:</b> ${weaponName} • ${armorName} • ${accessoryName}
+</div>
+
+<div class="heroUiSection heroUiSmall">
+  <b>BONUSES:</b> ${bonusText}
+</div>
 `;
 
 let ab=el("abilityPanel");
