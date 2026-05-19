@@ -461,9 +461,11 @@ html, body{
 
   /* MENU AREA */
 .menu{
-  height:auto;
-  padding:6px;
-  gap:6px;
+  flex:1;
+  min-height:0;
+  padding:4px 6px 6px 6px;
+  gap:4px;
+  overflow:hidden;
 }
 
 .menuRow{
@@ -473,8 +475,9 @@ html, body{
     "hero"
     "hotbar"
     "desc";
-  height:auto;
-  gap:6px;
+  flex:1;
+  min-height:0;
+  gap:4px;
 }
 
 .panelHero{
@@ -564,10 +567,10 @@ html, body{
     margin:3px 0;
   }
 
-  .log{
-    height:74px;
-    font-size:11px;
-  }
+.log{
+  height:74px;
+  font-size:11px;
+}
 
 .knightSprite{
   width:138px;
