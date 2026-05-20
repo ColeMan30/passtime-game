@@ -271,7 +271,7 @@ box-shadow:0 0 12px yellow;
 }
 
 .royalGuardSprite{
-  width:138px;
+  width:128px;
   height:128px;
 
   background-image:url("sprites/royalGuard_spear.png");
@@ -364,12 +364,12 @@ box-shadow:0 0 12px yellow;
 
 
 .summonedEnemy{
-  animation:summonPop 1.05s cubic-bezier(0.16, 1, 0.3, 1) 1;
+  animation:summonPop 0.45s cubic-bezier(0.16, 1, 0.3, 1) 1;
   transform-origin:center;
 }
 
 .heroSpawn{
-  animation:summonPop 1.05s cubic-bezier(0.16, 1, 0.3, 1) 1;
+  animation:summonPop 0.45s cubic-bezier(0.16, 1, 0.3, 1) 1;
   transform-origin:center;
 }
 
@@ -734,7 +734,7 @@ html, body{
 }
 
 .royalGuardSprite{
-  width:138px;
+  width:128px;
   height:128px;
 
   background-size:512px 128px;
@@ -1115,10 +1115,11 @@ else{
       clearInterval(royalGuardAnimTimers[guard.animId]);
 
       setTimeout(() => {
-        sprite.style.backgroundImage = `url("sprites/royalGuard_spear.png")`;
-        sprite.style.backgroundSize = "512px 128px";
-        sprite.style.backgroundPosition = "0px 0px";
-        royalGuardAnimTimers[guard.animId] = null;
+sprite.style.backgroundImage = `url("sprites/royalGuard_spear.png")`;
+sprite.style.backgroundSize = "512px 128px";
+sprite.style.backgroundPosition = "0px 0px";
+sprite.style.transform = guardTransform;
+royalGuardAnimTimers[guard.animId] = null;
         animationPlaying = false;
       }, frameTime);
     }
@@ -3197,7 +3198,7 @@ typeStory(storyText);
   recruit({
     _class:"RoyalGuard",
     name:"Royal Guard",
-    level:2,xp:0,
+    level:3,xp:0,
     hp:45,maxHp:45,
     attack:5,def:4,magic:1,resist:3,
     speed:5,
@@ -3212,7 +3213,7 @@ typeStory(storyText);
   recruit({
     _class:"RoyalGuard",
     name:"Royal Guard",
-    level:2,xp:0,
+    level:3,xp:0,
     hp:45,maxHp:45,
     attack:5,def:4,magic:1,resist:3,
     speed:5,
@@ -4001,7 +4002,7 @@ alive(heroes).forEach(t=>{
 });
 
   setCooldown(h, a);
-  log(`${h.name} shields the party with Guardian Aura!`);
+  log(`${h.name} surrounds the party with Guardian Aura!`);
 render();
 
 if(knightAnim){
@@ -4787,7 +4788,7 @@ style="
   background-image:url('sprites/royalGuard_spear.png');
   margin-top:-20px;
   margin-right:0px;
-  margin-bottom:-58px;
+  margin-bottom:-35px;
 "
     ></div>`
   : ""}
