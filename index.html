@@ -57,6 +57,219 @@ background:#2a1010;
 border-color:#aa3333;
 }
 
+.screen{
+  background-image:url("sprites/castleHall_background.png");
+  background-size:cover;
+  background-position:center;
+  image-rendering:pixelated;
+}
+
+.battleUnit{
+  background:transparent !important;
+  border:none !important;
+  box-shadow:none !important;
+  padding:2px;
+  min-height:118px;
+}
+
+.battleUnit{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.battleUnit{
+  cursor:default;
+  pointer-events:none;
+}
+
+.selectableTarget{
+  pointer-events:auto;
+  cursor:pointer;
+}
+
+.selectableTarget:hover{
+  filter:brightness(1.25);
+}
+
+.unitNameLine.selectableTarget{
+  pointer-events:auto;
+}
+
+.unitSpriteWrap{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:84px;
+}
+
+.battleUnit.selected{
+  outline:none;
+}
+
+.battleUnit.selected .selectableTarget{
+  filter:brightness(1.25) drop-shadow(0 0 5px gold);
+}
+
+.battleUnit.selected .assassinSprite{
+  filter:brightness(1.25) drop-shadow(0 0 5px gold);
+}
+
+.battleUnit.selected .spriteClickHitbox{
+  filter:none;
+}
+
+.battleUnit.selected .unitNameLine b{
+  color:gold;
+}
+
+.spriteClickHitbox{
+  position:absolute;
+  left:38px;
+  top:28px;
+  width:52px;
+  height:72px;
+  z-index:40;
+}
+
+.unitUI{
+  position:relative;
+  z-index:80;
+  width:72px;
+  font-size:7px;
+  line-height:1;
+  text-shadow:1px 1px 2px black;
+  pointer-events:none;
+}
+
+.heroBattleUI{
+  position:absolute;
+  left:22px;
+
+  top:50%;
+  transform:translateY(100px);
+  
+  z-index:90;
+}
+
+.heroBattleUI{
+  opacity:0.75;
+  width:58px;
+}
+
+.heroBattleUI .xpBar,
+.heroBattleUI .statusIconSlot{
+  display:none;
+}
+
+.heroBattleUI.uiOpen{
+  opacity:1;
+  width:72px;
+}
+
+.heroBattleUI.uiOpen .xpBar,
+.heroBattleUI.uiOpen .statusIconSlot{
+  display:block;
+}
+
+.enemyBattleUI{
+  position:absolute;
+  top:50%;
+  transform:translate(-22px, 105px);
+  z-index:95;
+  opacity:0.75;
+  width:54px;
+}
+
+.enemyBattleUI .hpBar{
+  margin-top:1px;
+}
+
+#enemies{
+  overflow:visible;
+  position:relative;
+  z-index:5;
+}
+
+.screen{
+  overflow:visible;
+}
+
+.enemyIntentLine{
+  font-size:7px;
+  margin-bottom:1px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:58px;
+}
+
+.intentAttack{ color:#ff6666; }
+.intentDebuff{ color:#c266ff; }
+.intentDefend{ color:#66ccff; }
+.intentHeal{ color:#66ff99; }
+
+.unitNameLine{
+  white-space:nowrap;
+  font-size:7px;
+  margin-bottom:0px;
+  line-height:1;
+}
+
+.unitNameLine b{
+  font-size:8px;
+}
+
+.unitNameLine span{
+  color:gold;
+  font-size:7px;
+}
+
+.enemyStatusLine{
+  font-size:9px;
+  line-height:1;
+  margin-top:1px;
+  white-space:nowrap;
+}
+
+.unitUI .hpBar,
+.unitUI .xpBar{
+  height:3px;
+  margin-top:0px;
+  border-width:1px;
+}
+
+.heroUnit,
+.enemyUnit{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  position:relative;
+}
+
+.enemyUnit{
+  align-items:flex-end;
+}
+
+.unitSpriteWrap,
+.knightSprite,
+.royalGuardSprite,
+.rogueSprite,
+.assassinSprite{
+  position:relative;
+  z-index:20;
+}
+
+.enemyUnit{
+  text-align:right;
+}
+
+
+.enemyUnit .unitUI{
+  margin-left:0;
+  text-align:right;
+}
+
 .card.dead{
 opacity:0.45;
 filter:grayscale(100%);
@@ -234,7 +447,7 @@ box-shadow:0 0 12px yellow;
   100%{ transform:scale(1); }
 }
 
-.selected {
+.selected:not(.battleUnit) {
   border: 3px solid gold !important;
   transform: scale(1.00);
   box-shadow: 0 0 5px gold;
@@ -310,12 +523,27 @@ box-shadow:0 0 12px yellow;
   margin-top:-20px;
   margin-bottom:-48px;
 
-  transform:translate(0px, -35px);
 }
 
-	#knightSprite{
-  transform:translate(0px, -35px);
+.rogueSprite,
+.assassinSprite{
+  width:128px;
+  height:128px;
+
+  background-repeat:no-repeat;
+  background-size:512px 128px;
+  background-position:0px 0px;
+  image-rendering:pixelated;
+
+  margin-left:-18px;
+  margin-top:-20px;
+  margin-bottom:-48px;
 }
+
+#knightSprite{
+  transform:translate(0px, -6px);
+}
+
 
 /* IDLE FRAME */
 .knightIdle{
@@ -323,70 +551,10 @@ box-shadow:0 0 12px yellow;
 }
 
 /* PLAY 4-FRAME ATTACK */
-.knightAttack{
-  animation: knightAttack 0.45s steps(4) 1;
-}
-
-.knightQuickAttack{
-  animation: knightQuickAttack 0.30s steps(4) 1;
-}
-
-/* PLAY 4-FRAME SHIELD */
-.knightShield{
-  animation: knightShield 0.45s steps(4) 1;
-}
-
-.knightShieldBash{
-  animation: knightShieldBash 0.55s steps(4) 1;
-}
-
-@keyframes knightAttack{
-
-  from{
-    background-position:10px 0px;
-  }
-
-  to{
-    background-position:-384px 0;
-  }
-
-}
-
-@keyframes knightShield{
-
-  from{
-    background-position:10px 0px;
-  }
-
-  to{
-    background-position:-384px 0;
-  }
-
-}
-
-@keyframes knightQuickAttack{
-
-  from{
-    background-position:10px 0px;
-  }
-
-  to{
-    background-position:-384px 0;
-  }
-
-}
-
-@keyframes knightShieldBash{
-
-  from{
-    background-position:10px 0px;
-  }
-
-  to{
-    background-position:-384px 0;
-  }
-
-}
+.knightAttack{}
+.knightQuickAttack{}
+.knightShield{}
+.knightShieldBash{}
 
 
 .summonedEnemy{
@@ -879,12 +1047,6 @@ html, body{
   font-weight:bold;
 }
 
-@media (max-width: 768px){
-  .knightSprite,
-  .royalGuardSprite{
-    transform: translate(0px, -50px) !important;
-  }
-}
 
 }
 
@@ -957,6 +1119,67 @@ let knightTutorialSkillsUsed = {};
 
 let unitAnimIdCounter = 1;
 
+const unitPositions = {
+  Knight:{
+    x:20,
+    y:85,
+    uiX:55,
+    uiY:70
+  },
+
+  RoyalGuard:{
+    default:{ x:20, y:90, uiX:22, uiY:72 },
+
+    1:{ x:-25, y:0, uiX:10, uiY:-25 },
+    2:{ x:-25, y:-175, uiX:10, uiY:-200 },
+    3:{ x:20, y:-225, uiX:55, uiY:-250 }
+  }
+};
+
+function getUnitPosition(unit, partyIndex){
+  return unitPositions[unit._class]?.[partyIndex]
+    || unitPositions[unit._class]
+    || unitPositions.RoyalGuard[partyIndex]
+    || { x:0, y:0, uiX:22, uiY:72 };
+}
+
+function getUnitTransform(unit){
+  let partyIndex = heroes.indexOf(unit);
+  let pos = getUnitPosition(unit, partyIndex);
+  return `translate(${pos.x}px, ${pos.y}px)`;
+}
+
+function getEnemyPosition(enemyIndex){
+
+  // Base stagger pattern
+  let pattern = [
+    { x:-20, y:85,  uiX:-55, uiY:70 },
+    { x:25,  y:0,   uiX:-10, uiY:-25 },
+    { x:25,  y:-175,uiX:-10, uiY:-200 },
+    { x:-20, y:-225,uiX:-55, uiY:-250 }
+  ];
+
+  // Which stagger slot
+  let slot = pattern[enemyIndex % pattern.length];
+
+  // Every full row shifts downward slightly
+  let row = Math.floor(enemyIndex / pattern.length);
+
+  return {
+    x: slot.x + (row * 18),
+    y: slot.y + (row * 110),
+
+    uiX: slot.uiX + (row * 18),
+    uiY: slot.uiY + (row * 110)
+  };
+}
+
+function getEnemyTransform(enemy){
+  let enemyIndex = enemies.indexOf(enemy);
+  let pos = getEnemyPosition(enemyIndex);
+  return `translate(${pos.x}px, ${pos.y}px)`;
+}
+
 function assignUnitAnimId(unit){
   if(unit && !unit.animId){
     unit.animId = unitAnimIdCounter++;
@@ -984,15 +1207,12 @@ function d20(){return Math.floor(Math.random()*20)+1;}
 
 function showFloatText(entity, text, type="damage"){
 
-  let cards = document.querySelectorAll(".card");
+  let ui = [...document.querySelectorAll(".unitUI")]
+    .find(u => u.dataset.animId === String(entity.animId));
 
-let card = [...cards].find(c =>
-  c.dataset.animId === String(entity.animId)
-);
+  if(!ui) return;
 
-  if(!card) return;
-
-  let rect = card.getBoundingClientRect();
+  let rect = ui.getBoundingClientRect();
 
   let div = document.createElement("div");
 
@@ -1003,8 +1223,8 @@ let card = [...cards].find(c =>
   }`;
 
   div.innerText = text;
-  div.style.left = rect.left + rect.width / 2 + "px";
-  div.style.top = rect.top + 10 + "px";
+div.style.left = rect.left + rect.width / 2 + "px";
+div.style.top = rect.top - 6 + "px";
 
   document.body.appendChild(div);
 
@@ -1046,7 +1266,30 @@ function getInitiative(entity, wave) {
   return init;
 }
 
-function setKnightAnimation(animClass, duration = 500){
+function getDashTransform(fromEntity, toEntity, baseTransform, maxDash = 175){
+  if(!fromEntity || !toEntity) return baseTransform;
+
+  let fromCard = [...document.querySelectorAll(".card")]
+    .find(c => c.dataset.animId === String(fromEntity.animId));
+
+  let toCard = [...document.querySelectorAll(".card")]
+    .find(c => c.dataset.animId === String(toEntity.animId));
+
+  if(!fromCard || !toCard) return baseTransform;
+
+  let fromRect = fromCard.getBoundingClientRect();
+  let toRect = toCard.getBoundingClientRect();
+
+  let dx = (toRect.left + toRect.width / 2) - (fromRect.left + fromRect.width / 2);
+  let dy = (toRect.top + toRect.height / 2) - (fromRect.top + fromRect.height / 2);
+
+  dx = Math.max(-maxDash, Math.min(maxDash, dx * 1.55));
+  dy = Math.max(-35, Math.min(35, dy * 0.25));
+
+  return `${baseTransform} translate(${dx}px, ${dy}px)`;
+}
+
+function setKnightAnimation(animClass, duration = 400, target = null){
 
   let sprite = document.querySelector("#party #knightSprite");
   if(!sprite) return;
@@ -1058,9 +1301,20 @@ function setKnightAnimation(animClass, duration = 500){
     knightAnimTimer = null;
   }
 
-  let sheet = "sprites/knight_attack.png";
-  let moveStart = "translate(0px, -35px)";
-  let moveEnd = "translate(0px, -35px)";
+let knight = heroes.find(h => h._class === "Knight");
+let placedTransform = getUnitTransform(knight);
+
+let sheet = "sprites/knight_attack.png";
+let moveStart = placedTransform;
+let moveEnd = placedTransform;
+
+if(
+  animClass === "knightQuickAttack" ||
+  animClass === "knightAttack" ||
+  animClass === "knightShieldBash"
+){
+  moveEnd = getDashTransform(knight, target, placedTransform);
+}
 
 if(animClass === "knightShield"){
   sheet = "sprites/knight_shield.png";
@@ -1085,9 +1339,9 @@ else if(animClass === "knightShieldBash"){
   knightAnimTimer = setInterval(() => {
     sprite.style.backgroundPosition = frames[frame];
 
-    if(frame === frames.length - 1){
-      sprite.style.transform = moveEnd;
-    }
+    if(frame >= 1){
+  sprite.style.transform = moveEnd;
+}
 
     frame++;
 
@@ -1098,7 +1352,7 @@ else if(animClass === "knightShieldBash"){
         sprite.style.backgroundImage = `url("sprites/knight_attack.png")`;
         sprite.style.backgroundSize = "512px 128px";
         sprite.style.backgroundPosition = "0px 0px";
-sprite.style.transform = "translate(0px, -35px)";
+sprite.style.transform = placedTransform;
         animationPlaying = false;
         knightAnimTimer = null;
       }, frameTime);
@@ -1106,7 +1360,7 @@ sprite.style.transform = "translate(0px, -35px)";
   }, frameTime);
 }
 
-function setRoyalGuardAnimation(guard, abilityName, duration = 500){
+function setRoyalGuardAnimation(guard, abilityName, duration = 400, target = null){
 
   if(!guard) return;
 
@@ -1122,8 +1376,14 @@ function setRoyalGuardAnimation(guard, abilityName, duration = 500){
     clearInterval(royalGuardAnimTimers[guard.animId]);
   }
 
-let guardTransform = "translate(0px, -35px)";
+let guardTransform = getUnitTransform(guard);
 let sheet;
+
+let moveEnd = guardTransform;
+
+if(abilityName && abilityName.trim() !== "Shield Wall"){
+  moveEnd = getDashTransform(guard, target, guardTransform);
+}
 
 if(abilityName && abilityName.trim() === "Shield Wall"){
   sheet = "sprites/royalGuard_shield.png";
@@ -1144,6 +1404,10 @@ else{
 
   royalGuardAnimTimers[guard.animId] = setInterval(() => {
     sprite.style.backgroundPosition = frames[frame];
+
+if(frame >= 1){
+  sprite.style.transform = moveEnd;
+}
     frame++;
 
     if(frame >= frames.length){
@@ -1161,6 +1425,139 @@ royalGuardAnimTimers[guard.animId] = null;
   }, frameTime);
 }
 
+function setRogueAnimation(
+  rogue,
+  skillName,
+  duration = 250,
+  target = null
+){
+
+  if(!rogue) return;
+
+  let sprite = document.querySelector(
+    `#party .rogueSprite[data-anim-id="${rogue.animId}"]`
+  );
+
+  if(!sprite) return;
+
+  animationPlaying = true;
+
+  let placedTransform = getUnitTransform(rogue);
+
+let moveStart = placedTransform;
+let moveEnd = placedTransform;
+
+if(skillName === "Backstab"){
+  moveEnd = getDashTransform(
+    rogue,
+    target,
+    placedTransform,
+    420
+  );
+}
+else{
+  moveEnd = getDashTransform(
+    rogue,
+    target,
+    placedTransform,
+    175
+  );
+}
+
+  sprite.style.backgroundImage = `url("sprites/rogue_quickAttack.png")`;
+  sprite.style.backgroundSize = "512px 128px";
+  sprite.style.backgroundRepeat = "no-repeat";
+
+if(skillName === "Backstab"){
+  sprite.style.transform =
+    moveStart + " scaleX(-1)";
+}
+else{
+  sprite.style.transform = moveStart;
+}
+
+  sprite.style.transform = placedTransform;
+
+  let frames = ["0px 0px", "-128px 0px", "-256px 0px", "-384px 0px"];
+  let frame = 0;
+  let frameTime = duration / frames.length;
+
+  let timer = setInterval(() => {
+    sprite.style.backgroundPosition = frames[frame];
+if(frame >= 1){
+
+  if(skillName === "Backstab"){
+    sprite.style.transform =
+      moveEnd + " scaleX(-1)";
+  }
+  else{
+    sprite.style.transform = moveEnd;
+  }
+}
+    frame++;
+
+    if(frame >= frames.length){
+      clearInterval(timer);
+
+      setTimeout(() => {
+        sprite.style.backgroundPosition = "0px 0px";
+        sprite.style.transform = placedTransform;
+sprite.style.scale = "";
+        animationPlaying = false;
+      }, frameTime);
+    }
+  }, frameTime);
+}
+
+function setAssassinAnimation(enemy, skillName, duration = 300, target = null){
+  if(!enemy) return;
+
+  let sprite = document.querySelector(
+    `#enemies .assassinSprite[data-anim-id="${enemy.animId}"]`
+  );
+
+  if(!sprite) return;
+
+  animationPlaying = true;
+
+  let placedTransform = getEnemyTransform(enemy);
+let moveStart = placedTransform;
+let moveEnd = getDashTransform(enemy, target, placedTransform);
+
+  let sheet = skillName === "Poison Blade"
+    ? "sprites/assassin_poisonAttack.png"
+    : "sprites/assassin_quickAttack.png";
+
+  sprite.style.backgroundImage = `url("${sheet}")`;
+  sprite.style.backgroundSize = "512px 128px";
+  sprite.style.backgroundRepeat = "no-repeat";
+  sprite.style.transform = moveStart;
+
+  let frames = ["0px 0px", "-128px 0px", "-256px 0px", "-384px 0px"];
+  let frame = 0;
+  let frameTime = duration / frames.length;
+
+  let timer = setInterval(() => {
+    sprite.style.backgroundPosition = frames[frame];
+    frame++;
+
+if(frame >= 1){
+  sprite.style.transform = moveEnd;
+}
+
+    if(frame >= frames.length){
+      clearInterval(timer);
+
+      setTimeout(() => {
+        sprite.style.backgroundImage = `url("sprites/assassin_quickAttack.png")`;
+        sprite.style.backgroundPosition = "0px 0px";
+        sprite.style.transform = placedTransform;
+        animationPlaying = false;
+      }, frameTime);
+    }
+  }, frameTime);
+}
+
 function waitForAnimationThenNextTurn(){
 
   if(animationPlaying){
@@ -1171,7 +1568,7 @@ function waitForAnimationThenNextTurn(){
   nextTurn();
 }
 
-function endTurnAfterDelay(delay = 750){
+function endTurnAfterDelay(delay = 350){
   activeTurn = null;
 
   setTimeout(() => {
@@ -1690,6 +2087,26 @@ else if(entity.status.defend) icons.push("🛡️");
 : "";
 }
 
+function enemyIntentIcon(intent){
+
+  if(!intent) return "";
+
+  let t = intent.toLowerCase();
+
+  if(t.includes("poison")) return "☠️";
+  if(t.includes("burn")) return "🔥";
+  if(t.includes("stun")) return "💫";
+  if(t.includes("heal")) return "✨";
+  if(t.includes("guard")) return "🛡️";
+
+  return "⚔️";
+}
+
+function enemyHpColor(en){
+  if(en.bossId) return "gold";
+  return "limegreen";
+}
+
 const statusEffects = {
 
 poison:{
@@ -1734,6 +2151,26 @@ regen:{
   }
 }
 };
+
+function enemyIntentClass(intent){
+  if(!intent) return "intentAttack";
+
+  let t = intent.toLowerCase();
+
+  if(t.includes("poison") || t.includes("burn") || t.includes("stun")){
+    return "intentDebuff";
+  }
+
+  if(t.includes("guard") || t.includes("defend")){
+    return "intentDefend";
+  }
+
+  if(t.includes("heal")){
+    return "intentHeal";
+  }
+
+  return "intentAttack";
+}
 
 function applyStatus(t, type){
   if(!t.status) t.status = {};
@@ -1792,6 +2229,40 @@ if(type === "burn" && t.bossId && Math.random() < 0.25){
   t.status[type] = 3;
 }
 
+function handleStatusDeath(t){
+  if(!t || t.hp > 0) return false;
+
+  t.hp = 0;
+  t.dead = true;
+
+  if(heroes.includes(t)){
+    selectedAlly = null;
+
+    if(activeTurn?.entity === t){
+      activeTurn = null;
+    }
+
+    log(`💀 ${t.name} falls from status damage!`);
+pruneTurnQueue();
+
+if(turnIndex >= turnQueue.length){
+  turnIndex = 0;
+}
+
+render();
+renderTurnBar();
+renderHotbar();
+return true;
+  }
+
+  if(enemies.includes(t)){
+    cleanupDeadEnemies();
+    return true;
+  }
+
+  return false;
+}
+
 function tickStatus(t){
 
   if(!t || !t.status) return;
@@ -1831,16 +2302,9 @@ if(typeof s === "object"){
     log(`☠️ ${t.name} suffers poison x${s.stacks}`);
   }
 
-  if(t.hp <= 0){
-    t.hp = 0;
-    t.dead = true;
-
-    if(enemies.includes(t)){
-      cleanupDeadEnemies();
-    }
-
-    return;
-  }
+if(handleStatusDeath(t)){
+  return;
+}
 
   if(s.duration <= 0){
     delete t.status[k];
@@ -1869,14 +2333,7 @@ else if(diff < 0){
 }
 }
 
-if(t.hp <= 0){
-  t.hp = 0;
-  t.dead = true;
-
-  if(enemies.includes(t)){
-    cleanupDeadEnemies();
-  }
-
+if(handleStatusDeath(t)){
   return;
 }
 	
@@ -3228,7 +3685,9 @@ if(!DEV_MODE){
   });
 }
 
-  heroes.forEach(h=>{
+  heroes.forEach((h, partyIndex)=>{
+
+let pos = getUnitPosition(h, partyIndex);
 
 if (!DEV_MODE && h._class === "Knight" && !h._tutorialBuffApplied) {
 
@@ -3476,7 +3935,7 @@ typeStory(storyText);
     _class:"RoyalGuard",
     name:"Royal Guard",
     level:3,xp:0,
-    hp:45,maxHp:45,
+    hp:50,maxHp:50,
     attack:5,def:4,magic:1,resist:3,
     speed:5,
     critRate:0.03,critMult:1.3,
@@ -3491,7 +3950,22 @@ typeStory(storyText);
     _class:"RoyalGuard",
     name:"Royal Guard",
     level:3,xp:0,
-    hp:45,maxHp:45,
+    hp:50,maxHp:50,
+    attack:5,def:4,magic:1,resist:3,
+    speed:5,
+    critRate:0.03,critMult:1.3,
+    status:{},
+    abilities:[
+      {name:"Spear Strike",type:"physical",power:5,cooldownMax:0,cooldown:0,scale:"attack",target:"enemy"},
+      {name:"Shield Wall",type:"support",power:0,cooldownMax:3,cooldown:0,scale:"attack",target:"self",apply:"defend"}
+    ]
+  });
+
+  recruit({
+    _class:"RoyalGuard",
+    name:"Royal Guard",
+    level:3,xp:0,
+    hp:50,maxHp:50,
     attack:5,def:4,magic:1,resist:3,
     speed:5,
     critRate:0.03,critMult:1.3,
@@ -3857,6 +4331,8 @@ let a = turnQueue[turnIndex++];
 let entity = a.entity;
 activeTurn = a;
 
+renderHotbar();
+
 if(!entity || entity.hp <= 0 || entity.dead){
   activeTurn = null;
   nextTurn();
@@ -3919,11 +4395,11 @@ if(!bonusText){
 el("heroPanel").innerHTML=
 `
 <div class="heroUiLine">
-  <b>${h.name}</b> <span style="color:#aaa;">Lv ${h.level}</span>
+  LV ${h.level}
 </div>
 
 <div class="heroUiLine">
-  HP ${h.hp}/${h.maxHp}${statusIcons(h)}
+${statusIcons(h)}
 </div>
 
 <div class="hpBar">
@@ -4147,7 +4623,7 @@ if(wave <= 2 && h._class === "Knight"){
 }
 
 let knightAnim = null;
-let knightAnimDuration = 650;
+let knightAnimDuration = 400;
 
 let royalGuardAnim = false;
 let royalGuardAnimDuration = 550;
@@ -4156,9 +4632,10 @@ if(h._class === "Knight"){
   if(a.apply === "defend"){
     knightAnim = "knightShield";
   }
-  else if(a.name === "Quick Slash"){
-    knightAnim = "knightQuickAttack";
-  }
+else if(a.name === "Quick Slash"){
+  knightAnim = "knightQuickAttack";
+  knightAnimDuration = 350;
+}
   else if(a.name === "Shield Bash"){
     knightAnim = "knightShieldBash";
   }
@@ -4184,11 +4661,22 @@ if(a.name === "Defend"){
 render();
 
 if(knightAnim){
-  setKnightAnimation(knightAnim, knightAnimDuration);
+
+  // Only attack animations should dash toward a target
+  let dashTarget =
+    (a.target === "enemy" || a.target === "allEnemies")
+      ? targets?.[0]
+      : null;
+
+  setKnightAnimation(
+    knightAnim,
+    knightAnimDuration,
+    dashTarget
+  );
 }
 
 if(royalGuardAnim){
-  setRoyalGuardAnimation(h, a.name, royalGuardAnimDuration);
+  setRoyalGuardAnimation(h, a.name, knightAnimDuration, targets?.[0]);
 }
 
 endTurnAfterDelay(850);
@@ -4214,12 +4702,12 @@ if(a.aggroTurns){
 
   render();
 
-  if(knightAnim){
-    setKnightAnimation(knightAnim, knightAnimDuration);
-  }
+if(knightAnim){
+  setKnightAnimation(knightAnim, knightAnimDuration, targets[0]);
+}
 
 if(royalGuardAnim){
-  setRoyalGuardAnimation(h, a.name, royalGuardAnimDuration);
+setRoyalGuardAnimation(h, a.name, knightAnimDuration, targets?.[0]);
 }
 
 endTurnAfterDelay(950);
@@ -4250,7 +4738,7 @@ if(knightAnim){
 }
 
 if(royalGuardAnim){
-  setRoyalGuardAnimation(h, a.name, royalGuardAnimDuration);
+ setRoyalGuardAnimation(h, a.name, knightAnimDuration, targets?.[0]);
 }
 
 endTurnAfterDelay(950);
@@ -4278,6 +4766,15 @@ if(a.name === "Smoke Dodge"){
   log(`${h.name} disappears into smoke and prepares to dodge!`);
 
   render();
+
+if(h._class === "Rogue"){
+  setRogueAnimation(
+  h,
+  a.name,
+  500,
+  targets?.[0]
+);
+}
 
 endTurnAfterDelay(950);
 return;
@@ -4481,12 +4978,21 @@ setCooldown(h, a);
 
 render();
 
+if(h._class === "Rogue"){
+  setRogueAnimation(
+  h,
+  a.name,
+  500,
+  targets?.[0]
+);
+}
+
 if(knightAnim){
-  setKnightAnimation(knightAnim, knightAnimDuration);
+  setKnightAnimation(knightAnim, knightAnimDuration, targets[0]);
 }
 
 if(royalGuardAnim){
-  setRoyalGuardAnimation(h, a.name, royalGuardAnimDuration);
+  setRoyalGuardAnimation(h, a.name, knightAnimDuration, targets?.[0]);
 }
 
 endTurnAfterDelay(950);
@@ -4511,14 +5017,8 @@ function summonEnemy(type, w){
 
 summoned.justSummoned = true;
 
-  // Insert summoned enemies above the first boss card
-  let bossIndex = enemies.findIndex(e => e && e.bossId);
-
-  if(bossIndex !== -1){
-    enemies.splice(bossIndex, 0, summoned);
-  } else {
-    enemies.push(summoned);
-  }
+// Keep bosses at the top; add summoned enemies after existing enemies
+enemies.push(summoned);
 
 
   let init = getInitiative(summoned, wave);
@@ -4884,7 +5384,11 @@ if(e.hp <= 0){
 }
 
 setEnemyIntent(e);
-  render();
+render();
+
+if(e.type === "assassin" || e.type === "assassin_boss"){
+  setAssassinAnimation(e, skill.name, 300, t);
+}
 }
 
 /* ================= TURN BAR ================= */
@@ -4922,6 +5426,35 @@ div.innerHTML = `
 
 /* ================= RENDER ================= */
 
+function getBattleBackground(){
+  if(wave >= 1 && wave <= 4){
+    return "sprites/castleHall_background.png";
+  }
+
+  if(wave === 5){
+    return "sprites/throneRoom_background.png";
+  }
+
+  return "sprites/castleHall_background.png";
+}
+
+function selectHeroTarget(index){
+  let h = heroes[index];
+  if(!h || h.hp <= 0 || h.dead) return;
+
+  selectedAlly = selectedAlly === index ? null : index;
+  render();
+  showHero(index);
+}
+
+function selectEnemyTarget(index){
+  let en = enemies[index];
+  if(!en || en.hp <= 0 || en.dead) return;
+
+  selectedEnemy = selectedEnemy === index ? null : index;
+  render();
+}
+
 function render(){
 
 let p=el("party");
@@ -4930,6 +5463,8 @@ let e=el("enemies");
 p.innerHTML="";
 e.innerHTML="";
 
+document.querySelector(".screen").style.backgroundImage =
+  `url("${getBattleBackground()}")`;
 
 /* CLEAR DEAD TARGETS */
 
@@ -4947,28 +5482,19 @@ if(
   selectedAlly = null;
 }
 
-heroes.forEach(h=>{
+heroes.forEach((h, partyIndex)=>{
+
+let pos = getUnitPosition(h, partyIndex);
 
 p.innerHTML +=`
 
-<div class="card
-${heroes.indexOf(h)===selectedAlly ? 'selected' : ''}
+<div class="card battleUnit heroUnit
+${partyIndex === selectedAlly ? 'selected' : ''}
 ${h.hp <= 0 ? 'dead' : ''}
 ${h.justRecruited && !h.recruitAnimationQueued ? 'heroSpawn' : ''}"
 
 data-name="${h.name}"
 data-anim-id="${h.animId}"
-
-onclick="
-if(${h.hp <= 0 || h.dead}){
-  return;
-}
-if(selectedAlly === ${heroes.indexOf(h)}){
-  selectedAlly = null;
-}else{
-  selectedAlly = ${heroes.indexOf(h)};
-}
-render();
 ">
 
 <div style="
@@ -4977,60 +5503,77 @@ render();
   align-items:flex-start;
 ">
 
-  <div style="width:70%;">
-    <b>${h.name} <span style="color:gold;font-size:11px;">Lv.${h.level}</span></b><br>
-    HP ${h.hp}/${h.maxHp}<span class="statusIconSlot">${statusIcons(h)}</span>
+<div class="unitUI heroBattleUI"
+data-anim-id="${h.animId}" ${selectedAlly === partyIndex ? 'uiOpen' : ''}"
+style="left:${pos.uiX}px; top:${pos.uiY}px;">
+  <div
+  class="unitNameLine selectableTarget"
+  onclick="event.stopPropagation(); selectHeroTarget(${partyIndex})"
+>
+    <b>${h.name}</b> <span>Lv.${h.level}</span>
+    <span class="statusIconSlot">${statusIcons(h)}</span>
+  </div>
 
-    <div class="hpBar">
-      <div class="hpFill"
-      style="
-      width:${(h.hp/h.maxHp)*100}%;
-      background:${
-      (h.hp/h.maxHp) > 0.6
-      ? 'limegreen'
-      : (h.hp/h.maxHp) > 0.3
-      ? 'gold'
-      : 'red'
-      };
-      ">
-</div>
-</div>
-
-
-<div class="xpLabel">
-      XP: ${h.xp || 0} / ${xpToNext(h.level)}
-    </div>
-
-    <div class="xpBar">
-      <div class="xpFill"
-      style="width:${Math.min(100, ((h.xp||0)/(xpToNext(h.level)||1))*100)}%">
-      </div>
+  <div class="hpBar">
+    <div class="hpFill"
+    style="
+    width:${(h.hp/h.maxHp)*100}%;
+    background:${
+    (h.hp/h.maxHp) > 0.6
+    ? 'limegreen'
+    : (h.hp/h.maxHp) > 0.3
+    ? 'gold'
+    : 'red'
+    };
+    ">
     </div>
   </div>
 
+  <div class="xpBar">
+    <div class="xpFill"
+    style="width:${Math.min(100, ((h.xp||0)/(xpToNext(h.level)||1))*100)}%">
+    </div>
+  </div>
+</div>
+
 ${h._class === "Knight"
   ? `<div
-      id="knightSprite"
-      class="knightSprite knightIdle"
+  id="knightSprite"
+  class="knightSprite knightIdle selectableTarget"
+  onclick="event.stopPropagation(); selectHeroTarget(${partyIndex})"
 style="
   background-image:url('sprites/knight_attack.png');
   margin-top:-20px;
   margin-bottom:-58px;
-  transform:translate(0px, -35px);
+  transform:translate(${pos.x}px, ${pos.y}px);
 "
     ></div>`
   : ""}
 
 ${h._class === "RoyalGuard"
   ? `<div
-      class="royalGuardSprite"
+      class="royalGuardSprite selectableTarget"
       data-anim-id="${h.animId}"
-style="
-  background-image:url('sprites/royalGuard_spear.png');
-  margin-top:-20px;
-  margin-right:0px;
-  margin-bottom:-35px;
-"
+      onclick="event.stopPropagation(); selectHeroTarget(${partyIndex})"
+      style="
+        background-image:url('sprites/royalGuard_spear.png');
+        margin-top:-20px;
+        margin-right:0px;
+        margin-bottom:-35px;
+        transform:translate(${pos.x}px, ${pos.y}px);
+      "
+    ></div>`
+  : ""}
+
+${h._class === "Rogue"
+  ? `<div
+      class="rogueSprite selectableTarget"
+      data-anim-id="${h.animId}"
+      onclick="event.stopPropagation(); selectHeroTarget(${partyIndex})"
+      style="
+        background-image:url('sprites/rogue_quickAttack.png');
+        transform:translate(${pos.x}px, ${pos.y}px);
+      "
     ></div>`
   : ""}
 
@@ -5043,55 +5586,83 @@ style="
 
 enemies.forEach((en,i)=>{
 
+let pos = getEnemyPosition(i);
+
 e.innerHTML+=`
-<div class="card enemyCard
+<div class="card battleUnit enemyUnit
 ${i===selectedEnemy ? 'selected' : ''}
 ${en.dead ? 'dead' : ''}
 ${!en.summonAnimationQueued && en.justBossSpawn ? 'bossSpawn' : !en.summonAnimationQueued && en.justSummoned ? 'summonedEnemy' : ''}"
 data-name="${en.name}"
 data-anim-id="${en.animId}"
+>
 
-onclick="
-if(selectedEnemy === ${i}){
-  selectedEnemy = null;
-}else{
-  selectedEnemy = ${i};
-}
-render();
-">
+<div class="unitUI enemyBattleUI ${en.bossId ? 'bossEnemyUI' : ''}"
+data-anim-id="${en.animId}"
+style="right:${Math.abs(pos.uiX)}px; top:${pos.uiY}px;">
 
-<b>${en.icon || ""} ${en.name}</b><br>
 
-${en.intent
-  ? `<span style="color:orange;">Intent: ${en.intent}</span><br>`
+<div
+  class="unitNameLine selectableTarget"
+  onclick="event.stopPropagation(); selectEnemyTarget(${i})"
+>
+  <b>${en.icon || ""} ${en.name}</b>
+</div>
+
+<div class="hpBar">
+  <div class="hpFill"
+  style="
+  width:${(en.hp/en.maxHp)*100}%;
+  background:${enemyHpColor(en)};
+  (en.hp/en.maxHp) > 0.6
+  ? 'limegreen'
+  : (en.hp/en.maxHp) > 0.3
+  ? 'gold'
+  : 'red'
+  };
+  ">
+  </div>
+</div>
+
+${statusIcons(en)
+  ? `<div class="enemyStatusLine">${statusIcons(en)}</div>`
   : ""
 }
 
-HP ${en.hp}/${en.maxHp}<span class="statusIconSlot">${statusIcons(en)}</span>
+${en.intent
+  ? `<div class="enemyIntentLine ${enemyIntentClass(en.intent)}">
+      ${enemyIntentIcon(en.intent)} ${en.intent}
+    </div>`
+  : ""
+}
 
-<div class="hpBar">
-<div class="hpFill"
-style="
-width:${(en.hp/en.maxHp)*100}%;
-background:${
-(en.hp/en.maxHp) > 0.6
-? 'limegreen'
-: (en.hp/en.maxHp) > 0.3
-? 'gold'
-: 'red'
-};
-">
-</div>
 </div>
 
-</div>`;
+${en.type === "assassin" || en.type === "assassin_boss"
+  ? `<div
+      class="assassinSprite"
+      data-anim-id="${en.animId}"
+      style="
+        background-image:url('sprites/assassin_quickAttack.png');
+        transform:translate(${pos.x}px, ${pos.y}px);
+      "
+    >
+      <div
+        class="spriteClickHitbox selectableTarget"
+        onclick="event.stopPropagation(); selectEnemyTarget(${i})"
+      ></div>
+    </div>`
+  : ""}
+
+</div>
+`;
 });
 
 renderTurnBar();
 
-renderHotbar();
+heroes.forEach((h, partyIndex)=>{
 
-heroes.forEach(h => {
+let pos = getUnitPosition(h, partyIndex);
   if(h.justRecruited && !h.recruitAnimationQueued){
 
     h.recruitAnimationQueued = true;
