@@ -2,23 +2,25 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=450, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Pass Time - Game Engine</title>
 
 <style>
 html, body{
-margin:0;
-width:100%;
-height:100dvh;
-overflow:hidden;
-background:#0b0b10;
-font-family:monospace;
-color:white;
+  margin:0;
+  width:450px;
+  height:750px;
+  overflow:hidden;
+  background:#0b0b10;
+  font-family:monospace;
+  color:white;
 }
 
 body{
   display:flex;
   flex-direction:column;
+  max-width:450px;
+  max-height:750px;
 }
 
 .screen{
@@ -135,9 +137,9 @@ border-color:#aa3333;
 .unitUI{
   position:relative;
   z-index:80;
-  width:72px;
-  font-size:7px;
-  line-height:1;
+  width:92px;
+  font-size:9px;
+  line-height:1.1;
   text-shadow:1px 1px 2px black;
   pointer-events:none;
 }
@@ -147,14 +149,14 @@ border-color:#aa3333;
   left:22px;
 
   top:50%;
-  transform:translateY(100px);
-  
+  transform:translateY(105px);
+
   z-index:90;
 }
 
 .heroBattleUI{
-  opacity:0.75;
-  width:58px;
+  opacity:0.85;
+  width:78px;
 }
 
 .heroBattleUI .xpBar,
@@ -164,7 +166,7 @@ border-color:#aa3333;
 
 .heroBattleUI.uiOpen{
   opacity:1;
-  width:72px;
+  width:92px;
 }
 
 .heroBattleUI.uiOpen .xpBar,
@@ -175,10 +177,10 @@ border-color:#aa3333;
 .enemyBattleUI{
   position:absolute;
   top:50%;
-  transform:translate(-22px, 105px);
+  transform:translate(-22px, 110px);
   z-index:95;
-  opacity:0.75;
-  width:54px;
+  opacity:0.85;
+  width:82px;
 }
 
 .enemyBattleUI .hpBar{
@@ -211,22 +213,23 @@ border-color:#aa3333;
 
 .unitNameLine{
   white-space:nowrap;
-  font-size:7px;
+  font-size:9px;
   margin-bottom:0px;
   line-height:1;
 }
 
 .unitNameLine b{
-  font-size:8px;
+  font-size:10px;
 }
 
 .unitNameLine span{
   color:gold;
-  font-size:7px;
+  font-size:9px;
 }
 
 .enemyStatusLine{
   font-size:9px;
+  max-width: 82px
   line-height:1;
   margin-top:1px;
   white-space:nowrap;
@@ -541,7 +544,6 @@ box-shadow:0 0 12px yellow;
 }
 
 #knightSprite{
-  transform:translate(0px, -6px);
 }
 
 
@@ -721,7 +723,7 @@ html, body{
   box-sizing:border-box;
 }
 
-@media (max-width: 768px){
+@media screen{
 
   body{
     font-size:13px;
@@ -760,7 +762,7 @@ html, body{
 .screen{
   display:grid;
   grid-template-columns:1.25fr 0.75fr;
-  height:42dvh;
+  height:48dvh;
   padding:6px;
   gap:6px;
   overflow:visible;
@@ -939,7 +941,6 @@ html, body{
 
   position:relative;
   z-index:30;
-  transform:translate(0px, -35px);
 }
 
   .screen{
@@ -967,7 +968,6 @@ html, body{
 #knightSprite{
   position:relative;
   z-index:30;
-  transform:translate(0px, -35px);
 }
 
 #combatHotbar{
@@ -1126,37 +1126,53 @@ const unitPositions = {
     uiX:55,
     uiY:70
   },
-
-  RoyalGuard:{
-    default:{ x:20, y:90, uiX:22, uiY:72 },
-
-    1:{ x:-25, y:0, uiX:10, uiY:-25 },
-    2:{ x:-25, y:-175, uiX:10, uiY:-200 },
-    3:{ x:20, y:-225, uiX:55, uiY:-250 }
-  }
 };
 
 function getUnitPosition(unit, partyIndex){
-  return unitPositions[unit._class]?.[partyIndex]
-    || unitPositions[unit._class]
-    || unitPositions.RoyalGuard[partyIndex]
-    || { x:0, y:0, uiX:22, uiY:72 };
+
+  // HERO stagger pattern (mirror of enemies)
+  let pattern = [
+
+    // Front
+    { x:20, y:85, uiX:55, uiY:60 },
+
+    // Mid upper
+    { x:-30, y:0, uiX:10, uiY:-25 },
+
+    // Back upper
+    { x:-35, y:-175, uiX:10, uiY:-200 },
+
+    // Back front
+    { x:20, y:-225, uiX:55, uiY:-250 }
+  ];
+
+  let slot = pattern[partyIndex % pattern.length];
+
+  let row = Math.floor(partyIndex / pattern.length);
+
+  return {
+    x: slot.x + 25 - (row * 28),
+    y: slot.y + (row * 140),
+
+    uiX: slot.uiX + 25 - (row * 28),
+    uiY: slot.uiY + (row * 140)
+  };
 }
 
 function getUnitTransform(unit){
   let partyIndex = heroes.indexOf(unit);
   let pos = getUnitPosition(unit, partyIndex);
-  return `translate(${pos.x}px, ${pos.y}px)`;
+  return scaledTransform(`translate(${pos.x}px, ${pos.y}px)`);
 }
 
 function getEnemyPosition(enemyIndex){
 
   // Base stagger pattern
   let pattern = [
-    { x:-20, y:85,  uiX:-55, uiY:70 },
-    { x:25,  y:0,   uiX:-10, uiY:-25 },
+    { x:-30, y:85,  uiX:-55, uiY:60 },
+    { x:20,  y:0,   uiX:-10, uiY:-25 },
     { x:25,  y:-175,uiX:-10, uiY:-200 },
-    { x:-20, y:-225,uiX:-55, uiY:-250 }
+    { x:-35, y:-225,uiX:-55, uiY:-250 }
   ];
 
   // Which stagger slot
@@ -1165,19 +1181,19 @@ function getEnemyPosition(enemyIndex){
   // Every full row shifts downward slightly
   let row = Math.floor(enemyIndex / pattern.length);
 
-  return {
-    x: slot.x + (row * 18),
-    y: slot.y + (row * 110),
+return {
+  x: slot.x - 25 + (row * 28),
+  y: slot.y + (row * 140),
 
-    uiX: slot.uiX + (row * 18),
-    uiY: slot.uiY + (row * 110)
-  };
+  uiX: slot.uiX - 25 + (row * 28),
+  uiY: slot.uiY + (row * 140)
+};
 }
 
 function getEnemyTransform(enemy){
   let enemyIndex = enemies.indexOf(enemy);
   let pos = getEnemyPosition(enemyIndex);
-  return `translate(${pos.x}px, ${pos.y}px)`;
+  return scaledTransform(`translate(${pos.x}px, ${pos.y}px)`);
 }
 
 function assignUnitAnimId(unit){
@@ -1204,6 +1220,16 @@ let storyTypeId = 0;
 
 function el(id){return document.getElementById(id);}
 function d20(){return Math.floor(Math.random()*20)+1;}
+
+const SPRITE_SCALE = 1.25;
+
+function scaledTransform(transform){
+  return `${transform} scale(${SPRITE_SCALE})`;
+}
+
+function scaledFlipTransform(transform){
+  return `${transform} scaleX(-1) scale(${SPRITE_SCALE})`;
+}
 
 function showFloatText(entity, text, type="damage"){
 
@@ -1266,25 +1292,80 @@ function getInitiative(entity, wave) {
   return init;
 }
 
-function getDashTransform(fromEntity, toEntity, baseTransform, maxDash = 175){
+function stripScale(transform){
+  return transform.replace(` scale(${SPRITE_SCALE})`, "");
+}
+
+function getSpriteElement(entity){
+  if(!entity) return null;
+
+  // Exact sprite first
+  let sprite = document.querySelector(
+    `.knightSprite[data-anim-id="${entity.animId}"],
+     .royalGuardSprite[data-anim-id="${entity.animId}"],
+     .rogueSprite[data-anim-id="${entity.animId}"],
+     .assassinSprite[data-anim-id="${entity.animId}"]`
+  );
+
+  if(sprite) return sprite;
+
+  // Knight fallback
+  if(entity._class === "Knight"){
+    return document.querySelector("#knightSprite");
+  }
+
+  // Final fallback: unit card
+  return document.querySelector(`.card[data-anim-id="${entity.animId}"]`);
+}
+
+function getDashTransform(fromEntity, toEntity, baseTransform){
   if(!fromEntity || !toEntity) return baseTransform;
 
-  let fromCard = [...document.querySelectorAll(".card")]
-    .find(c => c.dataset.animId === String(fromEntity.animId));
+  let fromSprite = getSpriteElement(fromEntity);
+  let toSprite = getSpriteElement(toEntity);
 
-  let toCard = [...document.querySelectorAll(".card")]
-    .find(c => c.dataset.animId === String(toEntity.animId));
+  if(!fromSprite || !toSprite) return baseTransform;
 
-  if(!fromCard || !toCard) return baseTransform;
+  let fromRect = fromSprite.getBoundingClientRect();
+  let toRect = toSprite.getBoundingClientRect();
 
-  let fromRect = fromCard.getBoundingClientRect();
-  let toRect = toCard.getBoundingClientRect();
+  let fromIsHero = heroes.includes(fromEntity);
 
-  let dx = (toRect.left + toRect.width / 2) - (fromRect.left + fromRect.width / 2);
-  let dy = (toRect.top + toRect.height / 2) - (fromRect.top + fromRect.height / 2);
+  let targetX = fromIsHero
+    ? toRect.left - 50
+    : toRect.right + 50;
 
-  dx = Math.max(-maxDash, Math.min(maxDash, dx * 1.55));
-  dy = Math.max(-35, Math.min(35, dy * 0.25));
+  let targetY = toRect.top + toRect.height / 2;
+
+  let fromX = fromRect.left + fromRect.width / 2;
+  let fromY = fromRect.top + fromRect.height / 2;
+
+  let dx = targetX - fromX;
+  let dy = targetY - fromY;
+
+  return `${baseTransform} translate(${dx}px, ${dy}px)`;
+}
+
+function getBackstabDashTransform(fromEntity, toEntity, baseTransform){
+  if(!fromEntity || !toEntity) return baseTransform;
+
+  let fromSprite = getSpriteElement(fromEntity);
+  let toSprite = getSpriteElement(toEntity);
+
+  if(!fromSprite || !toSprite) return baseTransform;
+
+  let fromRect = fromSprite.getBoundingClientRect();
+  let toRect = toSprite.getBoundingClientRect();
+
+  // 50px behind enemy = right side of enemy sprite
+  let targetX = toRect.right + 50;
+  let targetY = toRect.top + toRect.height / 2;
+
+  let fromX = fromRect.left + fromRect.width / 2;
+  let fromY = fromRect.top + fromRect.height / 2;
+
+  let dx = targetX - fromX;
+  let dy = targetY - fromY;
 
   return `${baseTransform} translate(${dx}px, ${dy}px)`;
 }
@@ -1448,20 +1529,11 @@ let moveStart = placedTransform;
 let moveEnd = placedTransform;
 
 if(skillName === "Backstab"){
-  moveEnd = getDashTransform(
-    rogue,
-    target,
-    placedTransform,
-    420
-  );
+  moveEnd = getBackstabDashTransform(rogue, target, placedTransform);
 }
 else{
-  moveEnd = getDashTransform(
-    rogue,
-    target,
-    placedTransform,
-    175
-  );
+moveEnd = getDashTransform(rogue, target, placedTransform);
+
 }
 
   sprite.style.backgroundImage = `url("sprites/rogue_quickAttack.png")`;
@@ -1470,13 +1542,11 @@ else{
 
 if(skillName === "Backstab"){
   sprite.style.transform =
-    moveStart + " scaleX(-1)";
+    moveStart.replace(` scale(${SPRITE_SCALE})`, "") + ` scaleX(-1) scale(${SPRITE_SCALE})`;
 }
 else{
   sprite.style.transform = moveStart;
 }
-
-  sprite.style.transform = placedTransform;
 
   let frames = ["0px 0px", "-128px 0px", "-256px 0px", "-384px 0px"];
   let frame = 0;
@@ -1488,7 +1558,7 @@ if(frame >= 1){
 
   if(skillName === "Backstab"){
     sprite.style.transform =
-      moveEnd + " scaleX(-1)";
+      moveEnd.replace(` scale(${SPRITE_SCALE})`, "") + ` scaleX(-1) scale(${SPRITE_SCALE})`;
   }
   else{
     sprite.style.transform = moveEnd;
@@ -5538,14 +5608,15 @@ style="left:${pos.uiX}px; top:${pos.uiY}px;">
 
 ${h._class === "Knight"
   ? `<div
-  id="knightSprite"
-  class="knightSprite knightIdle selectableTarget"
-  onclick="event.stopPropagation(); selectHeroTarget(${partyIndex})"
+id="knightSprite"
+class="knightSprite knightIdle selectableTarget"
+data-anim-id="${h.animId}"
+onclick="event.stopPropagation(); selectHeroTarget(${partyIndex})"
 style="
   background-image:url('sprites/knight_attack.png');
   margin-top:-20px;
   margin-bottom:-58px;
-  transform:translate(${pos.x}px, ${pos.y}px);
+  transform:${getUnitTransform(h)};
 "
     ></div>`
   : ""}
@@ -5560,7 +5631,7 @@ ${h._class === "RoyalGuard"
         margin-top:-20px;
         margin-right:0px;
         margin-bottom:-35px;
-        transform:translate(${pos.x}px, ${pos.y}px);
+        transform:${getUnitTransform(h)};
       "
     ></div>`
   : ""}
@@ -5572,7 +5643,7 @@ ${h._class === "Rogue"
       onclick="event.stopPropagation(); selectHeroTarget(${partyIndex})"
       style="
         background-image:url('sprites/rogue_quickAttack.png');
-        transform:translate(${pos.x}px, ${pos.y}px);
+        transform:${getUnitTransform(h)};
       "
     ></div>`
   : ""}
@@ -5644,7 +5715,7 @@ ${en.type === "assassin" || en.type === "assassin_boss"
       data-anim-id="${en.animId}"
       style="
         background-image:url('sprites/assassin_quickAttack.png');
-        transform:translate(${pos.x}px, ${pos.y}px);
+        transform:${getEnemyTransform(en)};
       "
     >
       <div
