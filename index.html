@@ -196,12 +196,13 @@ border-color:#aa3333;
 }
 
 .enemyIntentLine{
-  font-size:7px;
+  font-size:9px;
   margin-bottom:1px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  max-width:58px;
+  white-space:normal;
+  overflow:visible;
+  text-overflow:unset;
+  max-width:82px;
+  line-height:1.05;
 }
 
 .intentAttack{ color:#ff6666; }
@@ -1334,8 +1335,8 @@ function getDashTransform(fromEntity, toEntity, baseTransform){
   let fromIsHero = heroes.includes(fromEntity);
 
   let targetX = fromIsHero
-    ? toRect.left - 50
-    : toRect.right + 50;
+    ? toRect.left - 15
+    : toRect.right + 15;
 
   let targetY = toRect.top + toRect.height / 2;
 
@@ -1360,7 +1361,7 @@ function getBackstabDashTransform(fromEntity, toEntity, baseTransform){
   let toRect = toSprite.getBoundingClientRect();
 
   // 50px behind enemy = right side of enemy sprite
-  let targetX = toRect.right + 50;
+  let targetX = toRect.right + 15;
   let targetY = toRect.top + toRect.height / 2;
 
   let fromX = fromRect.left + fromRect.width / 2;
@@ -2482,7 +2483,6 @@ ${storyTyping ? displayedStoryText : storyText}
 
 function showAbilityPreview(hero, ability){
 
-  let cost = getCost(hero, ability);
   let currentCooldown = ability.cooldown > 0 ? ability.cooldown : "Ready";
   let maxCooldown = ability.cooldownMax ?? 0;
 
@@ -2508,24 +2508,36 @@ function showAbilityPreview(hero, ability){
 
   let effectText = "";
 
-  if(ability.apply === "defend"){
-    effectText = "Applies Defend, reducing incoming damage.";
-  }
-  else if(ability.apply === "counter"){
-    effectText = "Applies Counter, reducing damage and counterattacking enemies that hit the hero.";
-  }
-  else if(ability.apply === "stun"){
-    effectText = "Can stun the target, causing them to lose their next action.";
-  }
-  else if(ability.apply === "poison"){
-    effectText = "Applies Poison. Poison stacks up to 5 times and deals stronger damage each tick.";
-  }
-  else if(ability.apply === "burn"){
-    effectText = "Applies Burn, dealing damage over time.";
-  }
-  else if(ability.apply === "regen"){
-    effectText = "Applies Regen, healing over time.";
-  }
+if(ability.apply === "defend"){
+  effectText = "Raises this hero's guard, reducing incoming damage until their next turn.";
+}
+else if(ability.apply === "counter"){
+  effectText = "Prepares a counter stance. The hero takes reduced damage and strikes back when attacked.";
+}
+else if(ability.apply === "stun"){
+  effectText = "Attempts to stun the target, causing them to lose their next action. Bosses may resist this.";
+}
+else if(ability.apply === "poison"){
+  effectText = "Poisons the target. Poison can stack up to 5 times and deals damage over time.";
+}
+else if(ability.apply === "burn"){
+  effectText = "Burns the target, dealing steady damage over several turns.";
+}
+else if(ability.apply === "regen"){
+  effectText = "Applies regeneration, healing the target over several turns.";
+}
+else if(ability.target === "enemy"){
+  effectText = "A direct attack against one enemy.";
+}
+else if(ability.target === "allEnemies"){
+  effectText = "Hits every enemy on the battlefield.";
+}
+else if(ability.target === "ally"){
+  effectText = "Targets one ally.";
+}
+else if(ability.target === "allAllies"){
+  effectText = "Affects the whole party.";
+}
 
 el("descPanel").innerHTML = `
   <div style="
@@ -2546,7 +2558,6 @@ el("descPanel").innerHTML = `
       <b>Power:</b> ${ability.power ?? 0}<br>
       <b>Scaling:</b> ${scaleText}<br>
       <b>Target:</b> ${targetText}<br>
-      <b>Cost:</b> ${cost}<br>
       <b>Cooldown:</b> ${currentCooldown} / ${maxCooldown}<br>
 
     </div>
@@ -2571,11 +2582,9 @@ el("descPanel").innerHTML = `
         ? `<b>Effect</b><br>${effectText}<br><br>`
         : ""}
 
-      <span style="color:#888;">
-        ${isMobile()
-          ? "Long-hold previews this skill."
-          : "Hover skills to preview details."}
-      </span>
+<span style="color:#888;">
+  Use this preview to compare power, scaling, target type, and cooldown before choosing a skill.
+</span>
 
     </div>
 
@@ -4467,7 +4476,7 @@ if(!bonusText){
 el("heroPanel").innerHTML=
 `
 <div class="heroUiLine">
-  LV ${h.level}
+  <b>${h.name} - Lv ${h.level}</b>
 </div>
 
 <div class="heroUiLine">
