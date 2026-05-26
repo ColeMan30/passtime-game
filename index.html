@@ -2215,7 +2215,7 @@ regen:{
     if(healed > 0 && Array.isArray(target._regenCasters)){
 
       // split XP among all regen sources
-      let xp = Math.floor((healed * 1.2) / target._regenCasters.length);
+      let xp = Math.floor((healed * 0.9) / target._regenCasters.length);
 
       target._regenCasters.forEach(caster=>{
         gainHealingXP(caster, xp);
@@ -2316,20 +2316,31 @@ function handleStatusDeath(t){
     }
 
     log(`💀 ${t.name} falls from status damage!`);
-pruneTurnQueue();
 
-if(turnIndex >= turnQueue.length){
-  turnIndex = 0;
-}
+    pruneTurnQueue();
 
-render();
-renderTurnBar();
-renderHotbar();
-return true;
+    if(turnIndex >= turnQueue.length){
+      turnIndex = 0;
+    }
+
+    render();
+    renderTurnBar();
+    renderHotbar();
+
+    return true;
   }
 
   if(enemies.includes(t)){
-    cleanupDeadEnemies();
+    log(`💀 ${t.name} falls from status damage!`);
+
+    pruneTurnQueue();
+    render();
+    renderTurnBar();
+
+    setTimeout(() => {
+      cleanupDeadEnemies();
+    }, 700);
+
     return true;
   }
 
@@ -4961,7 +4972,12 @@ if(!targets.length) return;
 
 targets.forEach(t => {
 
-if(a.apply === "regen" || a.name.toLowerCase().includes("heal") || a.name.toLowerCase().includes("resurrection")){
+if(
+  a.apply === "regen" ||
+  a.name.toLowerCase().includes("heal") ||
+  a.name.toLowerCase().includes("resurrection") ||
+  a.name === "Miracle"
+){
 
     let heal = Math.floor(a.power * 1.4 + h.magic * 0.9);
 
@@ -5508,14 +5524,48 @@ div.innerHTML = `
 /* ================= RENDER ================= */
 
 function getBattleBackground(){
+
+  // Castle
   if(wave >= 1 && wave <= 4){
     return "sprites/castleHall_background.png";
   }
 
+  // Throne room boss
   if(wave === 5){
     return "sprites/throneRoom_background.png";
   }
 
+  // Dungeon halls
+  if(wave >= 6 && wave <= 9){
+    return "sprites/dungeonHall_background.png";
+  }
+
+  // Dungeon boss
+  if(wave === 10){
+    return "sprites/dungeonBoss_background.png";
+  }
+
+  // Goblin caves
+  if(wave >= 11 && wave <= 14){
+    return "sprites/goblinCaves_background.png";
+  }
+
+  // Goblin throne
+  if(wave === 15){
+    return "sprites/goblinThrone.png";
+  }
+
+  // Corrupted forest
+  if(wave >= 16 && wave <= 19){
+    return "sprites/corruptForest_background.png";
+  }
+
+  // Corrupted forest boss
+  if(wave === 20){
+    return "sprites/corruptForestBoss_background.png";
+  }
+
+  // fallback
   return "sprites/castleHall_background.png";
 }
 
@@ -5799,7 +5849,7 @@ function xpToNext(level){
 
 function gainHealingXP(caster, amount){
 
-  let xp = Math.floor(amount * 1.5);
+  let xp = Math.floor(amount * 1.2);
 
   caster.xp = (caster.xp || 0) + xp;
 
